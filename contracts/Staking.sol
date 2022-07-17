@@ -2,19 +2,23 @@
 pragma solidity 0.5.10;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 
-/**
- * @title Ballot
- * @dev Implements voting process along with vote delegation
- */
+contract IERC20Detailed is IERC20 {
+    function name() public view returns (string memory);
+
+    function symbol() public view returns (string memory);
+
+    function decimals() public view returns (uint8);
+}
+
 contract Staking is Ownable {
     using SafeMath for uint256;
 
     struct Balance {
         address[] tokens;
-        mapping (address => uint256) amounts;
+        mapping(address => uint256) amounts;
     }
 
     address public feeCollector;
@@ -55,34 +59,41 @@ contract Staking is Ownable {
         return userBalance[userAddress].amounts[token];
     }
 
-    function changeCollectorAddress(address newCollector) external onlyOwner {
+    function setCollector(address newCollector) external onlyOwner {
         feeCollector = newCollector;
         emit CollectorChanged(newCollector);
     }
 
-    function stakeToken(address token, uint256 amount)
-        external
-        returns (uint256)
-    {
-        require(amount > 0, "Cannot stake 0");
+    function stake(address token, uint256 amount) external returns (uint256) {
+        require(amount > 100, "Cannot stake less then 100");
 
-        userBalance[msg.sender].amounts[token] = userBalance[msg.sender].amounts[token].add(amount);
+        uint256 decimals = 10 ** uint256(IERC20Detailed(token).decimals());
+
+        userBalance[msg.sender].amounts[token] = userBalance[msg.sender]
+            .amounts[token]
+            .add(amount);
+
         uint256 feePercent;
-        if (amount < 100) {
+        if (amount < 100 * decimals) {
             feePercent = 1;
-        } else if (amount < 1000) {
+        } else if (amount < 1000 * decimals) {
             feePercent = 2;
         } else {
             feePercent = 3;
         }
 
-        uint256 fee = amount.mul(feePercent) / 100;
-        userBalance[feeCollector].amounts[token] = userBalance[feeCollector].amounts[token].add(fee);
-
-        bool success = IERC20(token).transferFrom(msg.sender, address(this), amount);
+        bool success = IERC20Detailed(token).transferFrom(
+            msg.sender,
+            address(this),
+            amount
+        );
 
         require(success, "Cannot stake");
-        success = IERC20(token).transferFrom(msg.sender, feeCollector, fee);
+        success = IERC20Detailed(token).transferFrom(
+            msg.sender,
+            feeCollector,
+            amount.mul(feePercent) / 100
+        );
 
         require(success, "Cannot stake");
         emit Staked(msg.sender, amount);

@@ -23,11 +23,11 @@ $ npm run dev:server
 
 **Compile contracts**
 ```sh
-$ npm run tronbox-compile
+$ npm run tronbox:compile
 ```
 **Deploy contracts to Shasta test network**
 ```sh
-$ npm run tronbox-migrate
+$ npm run tronbox:migrate
 ```
 
 **Test Smart Contracts**

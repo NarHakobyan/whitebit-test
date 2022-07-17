@@ -2,12 +2,13 @@
   "name": "whitebit-task",
   "version": "0.1.0",
   "license": "MIT",
+  "type": "commonjs",
   "author": "Narek <narek.hakobyan.07@gmail.com>",
   "scripts": {
     "dev:server": "docker run -it -p 9090:9090 --rm --name tron -e \"accounts=20\" trontools/quickstart",
     "test": "tronbox test tests/**",
-    "tronbox-compile": "tronbox compile --compile-all",
-    "tronbox-migrate": "tronbox migrate --reset --network shasta"
+    "tronbox:compile": "tronbox compile --compile-all",
+    "tronbox:migrate": "tronbox migrate --reset --network shasta"
   },
   "dependencies": {
     "@openzeppelin/contracts": "2.5.1",
@@ -17,7 +18,9 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
+    "bignumber.js": "^9.0.2",
     "chai": "^4.1.2",
+    "chalk": "^5.0.1",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
