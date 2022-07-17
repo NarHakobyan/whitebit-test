@@ -1,0 +1,43 @@
+{
+  "name": "whitebit-task",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Narek <narek.hakobyan.07@gmail.com>",
+  "scripts": {
+    "dev:server": "docker run -it -p 9090:9090 --rm --name tron -e \"accounts=20\" trontools/quickstart",
+    "test": "tronbox test tests/**",
+    "tronbox-compile": "tronbox compile --compile-all",
+    "tronbox-migrate": "tronbox migrate --reset --network shasta"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "2.5.1",
+    "core-js": "^3.6.5",
+    "dotenv": "^8.2.0",
+    "tronweb": "^2.10.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "chai": "^4.1.2",
+    "eslint": "^8.20.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "lint-staged": "^9.5.0",
+    "tronbox": "^2.7.13"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "git add"
+    ]
+  }
+}
